@@ -1,0 +1,24 @@
+{
+  "source_root": "/datastore/dungmt/textvqa/data/benchmark_v1/raw/textvqa_clean/TextVQA",
+  "output_root": "/datastore/dungmt/textvqa/data/benchmark_v1/raw/full_textvqa_degraded",
+  "workspace_root": "/datastore/dungmt/_workspace_full_textvqa_degraded",
+  "seed": 42,
+  "workers": 8,
+  "png_compression": 6,
+  "calibration_images": 300,
+  "single_calibration_images": 120,
+  "ablation_images": 400,
+  "preflight_images": 25,
+  "max_output_disk_gb": 100.0,
+  "expected_images": {"train": 21953, "val": 3166, "test": 3289},
+  "expected_questions": {"train": 34602, "val": 5000, "test": 5734},
+  "scheduler": {
+    "account": "uit",
+    "partition": "small",
+    "gres": "gpu:1g.18gb:1",
+    "cpus": 8,
+    "ram_gb": 32,
+    "walltime": "12:00:00",
+    "qos": ""
+  }
+}

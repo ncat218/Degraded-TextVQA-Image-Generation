@@ -1,0 +1,7 @@
+{
+  "original_notebook": "04_Final.ipynb",
+  "original_cell_sha256": "86e80ed9e98d4607852dfdbe0ff9f5381aba1c81849251b009cb54834333c12e",
+  "operators_unchanged": true,
+  "default_params_sha256": "ebecb708f4994aa0330dea1d72d90ba1c96306357e12cfa504f8c5a9d54f64f7",
+  "notes": "Full-split pipeline uses the original image-relative fallback when no OCR boxes are provided; output PNGs are not expected to match the old 1k/10k dataset because manifests/config hashes differ."
+}
