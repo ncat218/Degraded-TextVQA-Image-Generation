@@ -188,7 +188,7 @@ class ControllerTests(unittest.TestCase):
             self.assertIn('--partition=normal',args)
             self.assertIn('--gres=gpu:2g.35gb:1',args)
             self.assertIn('--qos=mig2-35',args)
-            self.assertIn('--cpus-per-task=12',args)
+            self.assertIn('--cpus-per-task=8',args)
             self.assertIn('--mem=40G',args)
             scripts=list((root/'workspace/logs').glob('*.sh'))
             self.assertEqual(len(scripts),1)

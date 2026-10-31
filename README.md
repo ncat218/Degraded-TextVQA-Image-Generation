@@ -78,12 +78,12 @@ Cấu hình hiện dùng partition `normal` vì `small` đang không cấp đư�
 | Partition | `normal` |
 | GRES | `gpu:2g.35gb:1` |
 | QOS | `mig2-35` |
-| CPU | 12 |
+| CPU | 8 |
 | RAM hệ thống | 40 GB |
 | Thời gian yêu cầu | 24 giờ |
-| Số tiến trình tạo ảnh | 12 |
+| Số tiến trình tạo ảnh | 8 |
 
-Cấu hình xin 12/16 CPU và 40/72 GB RAM trong giới hạn `normal` của tài liệu UIT. Giữ 12 worker để không tăng thêm nhu cầu CPU/RAM khi chỉ cần đổi hàng đợi. QOS `mig2-35` khớp job `normal` đã được tài khoản dungmt submit trên server. Preflight và các bước kiểm chứng chạy trong cùng job, không cần submit job thử riêng. 24 giờ là giới hạn được yêu cầu, không phải dự đoán thời gian hoàn tất; chuyển partition không bảo đảm được chạy ngay.
+Cấu hình xin 8 CPU và 40 GB RAM. Job 8073 yêu cầu 12 CPU đã được Slurm báo `QOSMaxCpuPerJobLimit`: trần CPU/RAM của partition trong tài liệu không thay thế giới hạn riêng của QOS. Vì vậy hạ còn 8 CPU/8 worker, bằng số CPU job normal 8015 của cùng tài khoản đã yêu cầu. Đây chưa phải xác nhận giá trị trần QOS chính xác; nếu vẫn bị giới hạn cần xem cấu hình QOS thực tế. QOS `mig2-35` khớp job `normal` đã được tài khoản dungmt submit trên server. Preflight và các bước kiểm chứng chạy trong cùng job, không cần submit job thử riêng. 24 giờ là giới hạn được yêu cầu, không phải dự đoán thời gian hoàn tất; sửa giới hạn CPU không bảo đảm được chạy ngay nếu còn chờ tài nguyên hoặc ưu tiên.
 
 **Thuật toán gốc chạy CPU bằng OpenCV/NumPy; GPU MIG được yêu cầu theo mẫu allocation của trường nhưng không dùng cho biến đổi ảnh.** Việc chuyển sang `normal` nhằm đổi hàng đợi, không chuyển thuật toán sang GPU. Quyền chạy tác vụ này trên queue GPU vẫn phụ thuộc chính sách UIT; nếu quản trị viên cấp queue CPU riêng thì cần cấu hình theo queue được cấp. Không tự đoán rằng queue CPU tồn tại.
 
@@ -93,17 +93,17 @@ Giới hạn walltime không vượt 72 giờ. Không tự submit lại liên t�
 
 ## 4. Theo dõi job
 
-### Chuyển job 8021 đang pending ở small sang một job normal mới
+### Thay job 8073 đang pending do vượt giới hạn CPU của QOS
 
 Thực hiện trên server, không hủy các job khác đang dùng chung tài khoản:
 
 ```bash
-scancel 8021
+scancel 8073
 cd /datastore/dungmt/textvqa/Tuan/Degraded-TextVQA-Image-Generation
 git pull --ff-only && python run_all.py
 ```
 
-Lệnh cuối chỉ submit khi cập nhật Git thành công. Nó tạo script/config snapshot mới và in job ID mới; job 8021 cũ không tự đổi partition khi cập nhật repo. Không thay đường dẫn nguồn/output hoặc xóa dữ liệu. Nếu Git báo thay đổi cục bộ, dừng và kiểm tra; không reset/ghi đè cấu hình tùy ý.
+Lệnh cuối chỉ submit khi cập nhật Git thành công. Nó tạo script/config snapshot mới và in job ID mới; job 8073 cũ không tự giảm CPU khi cập nhật repo. Không thay đường dẫn nguồn/output hoặc xóa dữ liệu. Nếu Git báo thay đổi cục bộ, dừng và kiểm tra; không reset/ghi đè cấu hình tùy ý.
 
 Script `.sh`, snapshot cấu hình và log nằm tại:
 
