@@ -185,8 +185,11 @@ class ControllerTests(unittest.TestCase):
                 with contextlib.redirect_stdout(io.StringIO()): run_all.submit(config)
             submit.assert_called_once()
             args=submit.call_args.args[0]
-            self.assertIn('--partition=small',args)
-            self.assertIn('--gres=gpu:1g.18gb:1',args)
+            self.assertIn('--partition=normal',args)
+            self.assertIn('--gres=gpu:2g.35gb:1',args)
+            self.assertIn('--qos=mig2-35',args)
+            self.assertIn('--cpus-per-task=12',args)
+            self.assertIn('--mem=40G',args)
             scripts=list((root/'workspace/logs').glob('*.sh'))
             self.assertEqual(len(scripts),1)
             text=scripts[0].read_text()

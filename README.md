@@ -70,27 +70,40 @@ python run_all.py --plan-only
 - Nếu chạy từ allocation đã có `SLURM_JOB_ID`: thực hiện ngay trong allocation đó, không submit thêm.
 - Không có `sbatch` và cũng không có allocation: báo lỗi, không tự chuyển sang tính toán trên login node.
 
-Cấu hình theo profile nhỏ nhất được ghi trong tài liệu UIT HPC:
+Cấu hình hiện dùng partition `normal` vì `small` đang không cấp được tài nguyên tại thời điểm chuyển cấu hình:
 
 | Tham số | Mặc định |
 |---|---|
 | Account | `uit` |
-| Partition | `small` |
-| GRES | `gpu:1g.18gb:1` |
+| Partition | `normal` |
+| GRES | `gpu:2g.35gb:1` |
+| QOS | `mig2-35` |
 | CPU | 12 |
 | RAM hệ thống | 40 GB |
 | Thời gian yêu cầu | 24 giờ |
 | Số tiến trình tạo ảnh | 12 |
 
-Cấu hình này dùng tối đa CPU/RAM của `small` theo tài liệu UIT để chạy trọn bộ trong một lượt submit. Preflight và các bước kiểm chứng chạy trong cùng job, không cần submit job thử riêng. 24 giờ là giới hạn được yêu cầu, không phải dự đoán thời gian hoàn tất; thời gian chờ cấp tài nguyên do Slurm quyết định.
+Cấu hình xin 12/16 CPU và 40/72 GB RAM trong giới hạn `normal` của tài liệu UIT. Giữ 12 worker để không tăng thêm nhu cầu CPU/RAM khi chỉ cần đổi hàng đợi. QOS `mig2-35` khớp job `normal` đã được tài khoản dungmt submit trên server. Preflight và các bước kiểm chứng chạy trong cùng job, không cần submit job thử riêng. 24 giờ là giới hạn được yêu cầu, không phải dự đoán thời gian hoàn tất; chuyển partition không bảo đảm được chạy ngay.
 
-**Thuật toán gốc chạy CPU bằng OpenCV/NumPy; GPU MIG được yêu cầu theo mẫu allocation của trường nhưng không dùng cho biến đổi ảnh.** Không có tuyên bố tăng tốc bằng H200. Quyền chạy tác vụ này trên queue GPU vẫn phụ thuộc chính sách UIT; nếu quản trị viên cấp queue CPU riêng thì cần cấu hình theo queue được cấp. Không tự đoán rằng queue CPU tồn tại. Không tăng lên `normal/large` để mong thuật toán này chạy GPU.
+**Thuật toán gốc chạy CPU bằng OpenCV/NumPy; GPU MIG được yêu cầu theo mẫu allocation của trường nhưng không dùng cho biến đổi ảnh.** Việc chuyển sang `normal` nhằm đổi hàng đợi, không chuyển thuật toán sang GPU. Quyền chạy tác vụ này trên queue GPU vẫn phụ thuộc chính sách UIT; nếu quản trị viên cấp queue CPU riêng thì cần cấu hình theo queue được cấp. Không tự đoán rằng queue CPU tồn tại.
 
 Cấu hình hiện kiểm tra ba profile được tài liệu nêu (`small`, `normal`, `large`), GRES tương ứng và giới hạn CPU/RAM. `gres` có thể để chuỗi rỗng nếu được phép dùng tác vụ CPU trong một trong các partition đó. Chưa kiểm chứng quyền submit/queue thực tế trên tài khoản trường. Nếu Slurm từ chối, gửi nguyên thông báo `sbatch`; chương trình sẽ không chuyển sang chạy trên login.
 
 Giới hạn walltime không vượt 72 giờ. Không tự submit lại liên tục khi lỗi hoặc hết giờ; chạy lại cùng lệnh để resume, tuân thủ quy định giãn cách submit của UIT.
 
 ## 4. Theo dõi job
+
+### Chuyển job 8021 đang pending ở small sang một job normal mới
+
+Thực hiện trên server, không hủy các job khác đang dùng chung tài khoản:
+
+```bash
+scancel 8021
+cd /datastore/dungmt/textvqa/Tuan/Degraded-TextVQA-Image-Generation
+git pull --ff-only && python run_all.py
+```
+
+Lệnh cuối chỉ submit khi cập nhật Git thành công. Nó tạo script/config snapshot mới và in job ID mới; job 8021 cũ không tự đổi partition khi cập nhật repo. Không thay đường dẫn nguồn/output hoặc xóa dữ liệu. Nếu Git báo thay đổi cục bộ, dừng và kiểm tra; không reset/ghi đè cấu hình tùy ý.
 
 Script `.sh`, snapshot cấu hình và log nằm tại:
 

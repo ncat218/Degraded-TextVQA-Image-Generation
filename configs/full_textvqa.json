@@ -14,11 +14,11 @@
   "expected_questions": {"train": 34602, "val": 5000, "test": 5734},
   "scheduler": {
     "account": "uit",
-    "partition": "small",
-    "gres": "gpu:1g.18gb:1",
+    "partition": "normal",
+    "gres": "gpu:2g.35gb:1",
     "cpus": 12,
     "ram_gb": 40,
     "walltime": "24:00:00",
-    "qos": ""
+    "qos": "mig2-35"
   }
 }
