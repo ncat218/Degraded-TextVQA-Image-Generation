@@ -77,10 +77,12 @@ Cấu hình theo profile nhỏ nhất được ghi trong tài liệu UIT HPC:
 | Account | `uit` |
 | Partition | `small` |
 | GRES | `gpu:1g.18gb:1` |
-| CPU | 8 |
-| RAM hệ thống | 32 GB |
-| Thời gian yêu cầu | 12 giờ |
-| Số tiến trình tạo ảnh | 8 |
+| CPU | 12 |
+| RAM hệ thống | 40 GB |
+| Thời gian yêu cầu | 24 giờ |
+| Số tiến trình tạo ảnh | 12 |
+
+Cấu hình này dùng tối đa CPU/RAM của `small` theo tài liệu UIT để chạy trọn bộ trong một lượt submit. Preflight và các bước kiểm chứng chạy trong cùng job, không cần submit job thử riêng. 24 giờ là giới hạn được yêu cầu, không phải dự đoán thời gian hoàn tất; thời gian chờ cấp tài nguyên do Slurm quyết định.
 
 **Thuật toán gốc chạy CPU bằng OpenCV/NumPy; GPU MIG được yêu cầu theo mẫu allocation của trường nhưng không dùng cho biến đổi ảnh.** Không có tuyên bố tăng tốc bằng H200. Quyền chạy tác vụ này trên queue GPU vẫn phụ thuộc chính sách UIT; nếu quản trị viên cấp queue CPU riêng thì cần cấu hình theo queue được cấp. Không tự đoán rằng queue CPU tồn tại. Không tăng lên `normal/large` để mong thuật toán này chạy GPU.
 
@@ -124,7 +126,7 @@ Thay `<ten_file>`/`<JOB_ID>` bằng giá trị thực tế. Log audit mỗi 1.00
 
 Mặc định 70% trên 615 dòng được làm tròn thành **431 EASY / 184 DIFFICULT_BUT_ANSWERABLE**. Nhãn không dùng để chọn/loại ảnh hoặc chứng minh ảnh answerable.
 
-Preflight chỉ là ước lượng từ 25 mẫu. Giới hạn output mặc định **100 GB** không có nghĩa code sẽ chiếm 100 GB hoặc server có sẵn quota đó; kiểm tra thêm dung lượng trống với biên 25%. Thời gian 12 giờ là thời gian xin job, không phải thời gian hoàn tất đã đo trên HPC. Không có benchmark full thật trên server trong repo.
+Preflight chỉ là ước lượng từ 25 mẫu. Giới hạn output mặc định **100 GB** không có nghĩa code sẽ chiếm 100 GB hoặc server có sẵn quota đó; kiểm tra thêm dung lượng trống với biên 25%. Thời gian 24 giờ là thời gian xin job, không phải thời gian hoàn tất đã đo trên HPC. Không có benchmark full thật trên server trong repo.
 
 ## 6. Thuật toán giữ nguyên từ notebook cũ
 

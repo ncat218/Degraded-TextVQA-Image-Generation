@@ -3,7 +3,7 @@
   "output_root": "/datastore/dungmt/textvqa/data/benchmark_v1/raw/full_textvqa_degraded",
   "workspace_root": "/datastore/dungmt/_workspace_full_textvqa_degraded",
   "seed": 42,
-  "workers": 8,
+  "workers": 12,
   "png_compression": 6,
   "calibration_images": 300,
   "single_calibration_images": 120,
@@ -16,9 +16,9 @@
     "account": "uit",
     "partition": "small",
     "gres": "gpu:1g.18gb:1",
-    "cpus": 8,
-    "ram_gb": 32,
-    "walltime": "12:00:00",
+    "cpus": 12,
+    "ram_gb": 40,
+    "walltime": "24:00:00",
     "qos": ""
   }
 }
